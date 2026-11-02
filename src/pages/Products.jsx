@@ -88,29 +88,23 @@ function Products (){
  
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0]">
-      {/* المقدمة والعناوين */}
-      <div className="flex flex-col items-center justify-center bg-[#F5F1E9] px-6 py-20 sm:py-20 text-center">
-        <p className="text-sm tracking-[0.3em] text-[#737373] pt-8">
-          OUR COLLECTION
+    <div className="min-h-screen bg-[#F7F5F0] px-8 mt-20">
+            {/* المقدمة والعناوين */}
+     <div className="flex flex-col items-start justify-center text-left">
+        <p className="pt-8 text-4xl sm:text-5xl md:text-7xl tracking-[0.11em]
+         sm:tracking-[0.2em] text-black font-light"
+          style={{ fontFamily: "'Playfair Display', serif" }}>
+          COLLECTION
         </p>
 
-        <h1
-          className="mt-4 text-4xl font-light tracking-tight text-[#171717] md:text-5xl"
-          style={{ fontFamily: "'Playfair Display', serif" }}
-        >
-          Timeless Pieces. Modern You.
-        </h1>
-
-        <p className="mt-4 max-w-xl text-base leading-7 text-[#737373]">
-          Discover our collection of carefully crafted essentials,
-          designed for modern men who appreciate timeless style.
+        <p className="mt-3 text-sm sm:text-base font-normal tracking-wide text-[#737373]">
+          Curated essentials for the modern man.
         </p>
       </div>
 
 
 
-      <div className="flex items-center justify-center pt-6 tracking-[0.2em]">JUST LANDED</div>
+     
 
       {/* أزرار التصنيفات */}
       <nav className="flex min-h-16 flex-wrap items-center justify-center gap-4 px-4 py-2 text-black sm:gap-8">

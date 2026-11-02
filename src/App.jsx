@@ -5,6 +5,8 @@ import { Routes,Route } from "react-router-dom"
 import Products from "./pages/Products"
 import Card from "./components/Card"
 import ProductDetails from "./pages/ProductDetails"
+import { CartProvider } from "./context/CartContext"
+import {CartProduct} from "./pages/CartProduct"
 const App =()=>{
 
 
@@ -12,6 +14,8 @@ const App =()=>{
 
   return(
     <>
+
+    <CartProvider>
      
      <Navbar/>
 
@@ -20,8 +24,10 @@ const App =()=>{
       <Route path="/products" element={<Products/>} />
       <Route path="/card" element={<Card/>} />
       <Route path="/products/:id" element={<ProductDetails/>} />
+      <Route path="/cart" element={<CartProduct/>} />
     
      </Routes>
+    </CartProvider>
 
     </>
   )

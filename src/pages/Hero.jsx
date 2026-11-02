@@ -16,11 +16,12 @@ const Hero = () => {
         <h1
           className="max-w-xl text-4xl font-normal leading-tight mb-8
           tracking-tight text-[#171717] sm:text-5xl lg:text-6xl xl:text-7xl"
-          style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "'Playfair Display', serif" }}
+        
         >
-          Timeless Style
+          TIMLESS STYLE
           <span className="mt-2 block text-[#A39585]">
-            for Modern Men
+            FOR MODERN MEN
           </span>
         </h1>
 

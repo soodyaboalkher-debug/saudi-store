@@ -95,8 +95,9 @@ const navLinks = [
     { label: "SUITS", to: "/products?category=suits" },
     { label: "CASUAL", to: "/products?category=casual" },
     { label: "TROUSERS", to: "/products?category=trousers" },
+    
+    { label: "All CATEGORY" , to :"/products"},
     { label: "ABOUT", to: "/#" },
-    { label: "All Category" , to :"/products"}
   ];
 
 return (

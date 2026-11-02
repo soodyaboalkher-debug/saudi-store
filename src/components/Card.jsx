@@ -1,9 +1,17 @@
 
-import { FaCartShopping } from "react-icons/fa6";
+
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 
+
 const Card = ({ product }) => {
+
+
+
+
+
+
+
   return (
     <article className="group w-full max-w-[340px] bg-white">
       {/* Product Image */}
@@ -25,7 +33,9 @@ const Card = ({ product }) => {
         <Link
           to={`/products/${product.id}`}
           aria-label={`View details for ${product.name}`}
-          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#262626] shadow-sm transition hover:bg-[#262626] hover:text-white"
+          className="absolute right-3 top-3 flex h-10 w-10 items-center
+           justify-center rounded-full bg-white text-[#262626] shadow-sm 
+           transition hover:bg-[#262626] hover:text-white"
         >
           <Search size={18} strokeWidth={1.7} />
         </Link>
@@ -33,6 +43,8 @@ const Card = ({ product }) => {
 
       {/* Product Details */}
       <div className="flex items-start justify-between gap-3 px-1 py-4">
+
+        
         <div className="min-w-0">
           <Link
             to={`/products/${product.id}`}
@@ -41,18 +53,10 @@ const Card = ({ product }) => {
             {product.name}
           </Link>
 
-          <p className="mt-2 text-sm text-[#737373]">
-            {product.price} EGP
-          </p>
+        
         </div>
 
-        <button
-          type="button"
-          aria-label={`Add ${product.name} to cart`}
-          className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#E7E2D9] text-[#262626] transition hover:bg-[#262626] hover:text-white"
-        >
-          <FaCartShopping size={14} />
-        </button>
+       
       </div>
     </article>
   );
