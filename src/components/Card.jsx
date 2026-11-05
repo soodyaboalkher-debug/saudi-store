@@ -1,14 +1,22 @@
 
 
-import { Search } from "lucide-react";
-import { Link } from "react-router-dom";
 
+import { FaHeart } from "react-icons/fa"; 
+import { Link } from "react-router-dom";
+import { useWish } from "../context/WishContext";
 
 const Card = ({ product }) => {
 
 
 
 
+ 
+ const {wishListItem,toggleWishList} = useWish();
+
+
+ const isWishList = wishListItem.some(
+  (item) => item.id === product.id
+);
 
 
 
@@ -30,15 +38,7 @@ const Card = ({ product }) => {
         </Link>
 
         {/* Product Details Icon */}
-        <Link
-          to={`/products/${product.id}`}
-          aria-label={`View details for ${product.name}`}
-          className="absolute right-3 top-3 flex h-10 w-10 items-center
-           justify-center rounded-full bg-white text-[#262626] shadow-sm 
-           transition hover:bg-[#262626] hover:text-white"
-        >
-          <Search size={18} strokeWidth={1.7} />
-        </Link>
+       
       </div>
 
       {/* Product Details */}
@@ -53,8 +53,23 @@ const Card = ({ product }) => {
             {product.name}
           </Link>
 
-        
         </div>
+
+          <button
+           onClick={()=>{
+            
+            
+            toggleWishList(product);
+
+           }}
+           
+             className={`flex items-center justify-center
+             hover:text-red-700 ${isWishList? 'text-red-700':'text-stone-300'}`}
+           
+          >
+            <FaHeart size={18} strokeWidth={1.7} 
+           />
+          </button>
 
        
       </div>

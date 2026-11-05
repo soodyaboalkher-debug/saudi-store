@@ -81,6 +81,9 @@ const addToCart = (product, quantity, selectedVariant) => {
 
 
 
+
+
+
 // clear cart
 const clearCart =()=>{setCartItems([])}
 
@@ -127,6 +130,7 @@ return(
     decreaseQuantity,
     deleteItemCart,
     clearCart,
+    
     
     }}>
 

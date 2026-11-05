@@ -43,10 +43,12 @@ const Hero = () => {
 
           <Link
             to="/#"
-            className="group inline-flex items-center justify-center gap-3 border-b border-[#171717] px-2 py-4 text-xs font-medium uppercase tracking-[0.18em] text-[#171717]"
+            className="group inline-flex items-center justify-center 
+            gap-3 border-b border-[#171717] px-2 py-4 text-xs 
+            font-medium uppercase tracking-[0.18em] text-[#171717] hover:text-black/40"
           >
             Our Story
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
+            <span className="transition-transform duration-300">
               →
             </span>
           </Link>

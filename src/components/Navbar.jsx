@@ -8,9 +8,10 @@ import {
   ShoppingBag,
   Menu,
   X,
+  Heart,
 } from "lucide-react";
 
-
+import { useCart } from "../context/CartContext";
 
 
 
@@ -26,7 +27,7 @@ const Navbar = () => {
 
   const suggestions = ["Suits", "Casual", "Trousers"];
 
-
+  const{cartItems}=useCart();
 
 
 
@@ -52,7 +53,7 @@ const Navbar = () => {
 
     const {data ,error} = await supabase
     .from('products')
-    .select('id , name , price ,image_url')
+    .select(`id , name ,image_url `)
     .ilike('name' , `%${term}%`)
     .limit(6);
 
@@ -95,6 +96,7 @@ const navLinks = [
     { label: "SUITS", to: "/products?category=suits" },
     { label: "CASUAL", to: "/products?category=casual" },
     { label: "TROUSERS", to: "/products?category=trousers" },
+    
     
     { label: "All CATEGORY" , to :"/products"},
     { label: "ABOUT", to: "/#" },
@@ -178,13 +180,44 @@ return (
             
           </Link>
 
+
+          <Link
+          to='/favorit'
+          className={`${iconClass} hidden sm:flex group relative`}
+          >
+            
+           <Heart  size={19} strokeWidth={1.6}/>
+            <span className="
+              absolute left-1/2 top-full mt-3
+              -translate-x-1/2
+              whitespace-nowrap
+              rounded-md bg-[#171717] px-3 py-2
+              text-xs text-white
+              opacity-0 invisible
+              transition-all duration-200
+              group-hover:opacity-100
+              group-hover:visible"
+            >
+              my wish list
+            </span>
+            
+          </Link>
+
           <Link
             to="/cart"
             aria-label="Shopping bag"
             className={`relative group ${iconClass}`}
           >
             <ShoppingBag size={19} strokeWidth={1.6} />
-                <span className="
+
+
+            <span 
+            className="absolute -right-2 -top-2 
+            text-xs bg-[#A39585] text-white rounded-full px-1.5"
+            >{cartItems.length}
+            </span>
+
+            <span className="
               absolute left-1/2 top-full mt-3
               -translate-x-1/2
               whitespace-nowrap
@@ -222,14 +255,7 @@ return (
       {menuOpen && (
         <div className="border-t border-[#E5DED3] bg-[#F7F5F0] px-6 py-6 md:hidden">
           <div className="flex flex-col gap-5">
-            <Link
-              to="/"
-              onClick={() => setMenuOpen(false)}
-              className="text-xs tracking-[0.18em] text-[#292824]"
-            >
-              HOME
-            </Link>
-
+          
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -248,6 +274,8 @@ return (
             >
               MY ACCOUNT
             </Link>
+
+         
           </div>
         </div>
       )}

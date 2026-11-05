@@ -3,7 +3,7 @@ import { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {supabase} from "../supabase"
 import { useCart } from '../context/CartContext';
-
+import { LoaderCircle } from 'lucide-react';
 
 
 
@@ -100,12 +100,15 @@ export default function ProductDetails() {
 
 
 
- if(loading) return <div className='h-full flex items-center justify-center mt-18 p-7'
- >SAUDI_LOADING...
+ if(loading) return <div 
+ className='bg-[#F7F5F0] h-screen flex flex-col items-center justify-center p-7 gap-4'
+ >
+  <LoaderCircle className='animate-spin w-11 h-11 '/>
+  <p className='text-[11px]'>SAUDI_LOADING...</p>
  </div>;
 
 
- if(wrong) return <div className='flex items-center justify-center mt-20 p-7'
+ if(wrong) return <div className='h-screen bg-[#F7F5F0] flex items-center justify-center mt-20 p-7'
  >{wrong}
  </div>;
 
@@ -130,7 +133,7 @@ export default function ProductDetails() {
         </div>
 
         {/* --- قسم تفاصيل المنتج والخيارات --- */}
-        <div className="flex flex-col justify-between h-full space-y-8 py-2">
+        <div className="flex flex-col justify-between h-full space-y-6 py-2">
           
           <div>
             {/* عنوان المنتج */}
@@ -175,8 +178,9 @@ export default function ProductDetails() {
                 <button
                 key={variant.id}
                 onClick={()=>{setSelectedVariant(variant)
-                  setQuantity(1)}
+                  setQuantity(variant?.stock > 0 ?  1 : 0)}
                 }
+                
                   className={`min-w-[48px] h-11 px-4 text-xs tracking-wider 
                   border rounded-lg transition-all ${isSelected
                     ? 'bg-[#2C2C2C] text-[#F7F5F0] border-[#2C2C2C]'
@@ -191,23 +195,27 @@ export default function ProductDetails() {
             {/* العداد والكمية (Quantity) */}
             <div className="mb-8">
               <span className="block text-xs uppercase tracking-widest text-[#8C8275] mb-3">
-                Quantity : {selectedVariant.stock}
+                Available Stock : {selectedVariant.stock}
               </span>
               <div className="inline-flex items-center border border-[#C5BCAC] rounded-lg bg-transparent">
 
 
                 <button 
+                disabled={selectedVariant?.stock <= 0}
                  onClick={()=>setQuantity((prev)=>Math.max(1, prev -1))}
-                className="px-4 py-2 text-base text-[#2C2C2C] hover:bg-[#E7E2D9] transition rounded-l-lg"
+                className="disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2 text-base text-[#2C2C2C] hover:bg-[#E7E2D9] transition rounded-l-lg"
                 >
                   -
                 </button>
                 <span className="px-4 py-2 text-sm font-medium text-[#2C2C2C]">
                  {quantity}
                 </span>
+
+
                 <button
+                disabled={selectedVariant?.stock <= 0}
                 onClick={()=>setQuantity((prev)=>Math.min(selectedVariant.stock ,prev +1))}
-                 className="px-4 py-2 text-base text-[#2C2C2C] hover:bg-[#E7E2D9] transition rounded-r-lg">
+                 className="disabled:cursor-not-allowed disabled:opacity-30 px-4 py-2 text-base text-[#2C2C2C] hover:bg-[#E7E2D9] transition rounded-r-lg">
                   +
                 </button>
 
@@ -222,13 +230,17 @@ export default function ProductDetails() {
             
 
             <button 
-             className="w-full py-4 bg-[#2C2C2C] 
+
+             disabled={selectedVariant?.stock <= 0}
+             className={`w-full py-4 bg-[#2C2C2C] disabled:cursor-not-allowed disabled:opacity-30
              text-[#F7F5F0] text-sm uppercase tracking-widest 
              font-medium rounded-xl hover:bg-[#403E3B] 
-             active:scale-[0.99] transition-all duration-200 shadow-md"
+             active:scale-[0.99] transition-all duration-200 shadow-md`}
              onClick={() => {
                 addToCart(product, quantity, selectedVariant);
               }}
+
+              
              
 
             >
