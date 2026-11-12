@@ -11,7 +11,13 @@ import {Footer} from "./components/Footer"
 import WhatsAppButton from "./components/WhatsAppButton";
 import { WishProvider } from "./context/WishContext";
 import {Wish} from "./pages/Wish"
-const App =()=>{
+import { AuthProvider } from "./context/AuthContext";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+
+
+
+export default function App(){
 
 
 
@@ -19,28 +25,36 @@ const App =()=>{
   return(
     <>
 
-    <CartProvider>
-      <WishProvider>
-        
-        <Navbar/>
+    <AuthProvider>
 
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/products" element={<Products/>} />
-      
-          <Route path="/products/:id" element={<ProductDetails/>} />
-          <Route path="/cart" element={<CartProduct/>} />
-           <Route path="/favorit" element={<Wish/>} />
-        
-        </Routes>
+      <CartProvider>
+        <WishProvider>
+          
+          <Navbar/>
 
-        <Footer/>
-        <WhatsAppButton />
-      </WishProvider>
-    </CartProvider>
+          <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/products" element={<Products/>} />
+        
+            <Route path="/products/:id" element={<ProductDetails/>} />
+            <Route path="/cart" element={<CartProduct/>} />
+            <Route path="/favorit" element={<Wish/>} />
+
+           
+
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register"  element={<Register/>}/>
+          
+          </Routes>
+
+          <Footer/>
+          <WhatsAppButton />
+        </WishProvider>
+      </CartProvider>
+
+    </AuthProvider>
 
     </>
   );
 };
 
-export default App;

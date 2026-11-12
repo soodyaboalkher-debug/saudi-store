@@ -4,22 +4,32 @@ import { useParams } from 'react-router-dom';
 import {supabase} from "../supabase"
 import { useCart } from '../context/CartContext';
 import { LoaderCircle } from 'lucide-react';
-
+import { useWish } from '../context/WishContext';
+import { Heart } from 'lucide-react';
 
 
 
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const {addToCart}=useCart();
-  
+  const {addToCart ,addLoading}=useCart();
+  const {toggleWishList ,wishListItem}=useWish();
 
 
   const [product,setProduct]=useState(null)
   const [wrong ,setWrong]=useState('');
   const [loading,setLoading]=useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [quantity,setQuantity]=useState(1)
+
+  const [quantity,setQuantity]=useState(1);
+  const [showMessage, setShowMessage] = useState(false);
+
+ 
+
+
+
+  const isWishList =wishListItem.some((wish) => wish.id === Number (id))
+
 
 
 
@@ -117,14 +127,33 @@ export default function ProductDetails() {
  >product is empety
  </div>;
  
-
+ 
 
   return (
+ 
     <div className="min-h-screen bg-[#F7F5F0] pt-24 pb-16 px-6 md:px-12 text-[#2C2C2C]">
+         {showMessage && !addLoading &&(
+            <div className="
+              fixed top-20 left-1/2 -translate-x-1/2
+              z-50
+              bg-[#292722]
+              text-white
+              px-8 py-4
+              shadow-xl
+              rounded-lg
+              text-sm
+              tracking-wide
+              whitespace-nowrap
+            ">
+              Product added to your bag successfully
+            </div>
+          )}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         
         {/* --- قسم صورة المنتج --- */}
-        <div className="w-full bg-[#E7E2D9] rounded-2xl overflow-hidden aspect-[3/4] flex items-center justify-center border border-[#C5BCAC]/30 shadow-sm">
+        <div className="w-full bg-[#E7E2D9] rounded-2xl 
+        overflow-hidden aspect-[3/4] flex items-center justify-center 
+        border border-[#C5BCAC]/30 shadow-sm">
           <img
             src={product.image_url}
             alt={product.name}
@@ -133,7 +162,7 @@ export default function ProductDetails() {
         </div>
 
         {/* --- قسم تفاصيل المنتج والخيارات --- */}
-        <div className="flex flex-col justify-between h-full space-y-6 py-2">
+        <div className="flex flex-col justify-between space-y-6 py-2">
           
           <div>
             {/* عنوان المنتج */}
@@ -224,32 +253,74 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* زر الإضافة إلى السلة */}
-          <div className="pt-4">
 
-            
 
-            <button 
-
-             disabled={selectedVariant?.stock <= 0}
-             className={`w-full py-4 bg-[#2C2C2C] disabled:cursor-not-allowed disabled:opacity-30
-             text-[#F7F5F0] text-sm uppercase tracking-widest 
-             font-medium rounded-xl hover:bg-[#403E3B] 
-             active:scale-[0.99] transition-all duration-200 shadow-md`}
-             onClick={() => {
-                addToCart(product, quantity, selectedVariant);
-              }}
-
-              
-             
-
+      
+          {/* Product Actions */}
+          <div className="flex flex-col gap-3 pt-6">
+            {/* Wishlist Button */}
+            <button
+              onClick={() => toggleWishList(product)}
+              className="
+                w-full h-14
+                flex items-center justify-center gap-3
+                border border-[#D8D1C7]
+                bg-transparent
+                text-[#292722]
+                text-xs font-medium uppercase tracking-[0.2em]
+                hover:bg-[#EEEAE3]
+                transition-all duration-300
+              "
             >
+              <Heart
+                size={19}
+                strokeWidth={1.5}
+                className={`transition-colors duration-300 ${
+                  isWishList
+                    ? "text-red-600 fill-red-600"
+                    : "text-[#292722] fill-transparent"
+                }`}
+              />
 
-              ADD TO CART
-
+              {isWishList ? "REMOVE FROM WISHLIST" : "ADD TO WISHLIST"}
             </button>
 
+            {/* Add To Cart Button */}
+            <button
+              disabled={!selectedVariant || selectedVariant.stock <= 0}
+              className="
+                relative
+                w-full h-14
+                flex items-center justify-center
+                bg-[#292722]
+                text-[#F7F5F0]
+                text-xs font-medium uppercase tracking-[0.2em]
+                hover:bg-[#403E3B]
+                disabled:opacity-40
+                disabled:cursor-not-allowed
+                active:scale-[0.99]
+                transition-all duration-300
+              "
+              onClick={() =>{
+                 addToCart(product, quantity, selectedVariant);
+                  setShowMessage(true);
+                  setTimeout(() => {
+                    setShowMessage(false)
+                  }, 2000);
+                }}
+            >
+              {!selectedVariant
+                ? "SELECT A SIZE"
+                : selectedVariant.stock <= 0
+                ? "OUT OF STOCK" :
+                addLoading ? <LoaderCircle className='animate-spin' size={18}/>
+                : "ADD TO BAG"}
+            </button>
+
+         
+
           </div>
+
 
         </div>
 

@@ -1,6 +1,6 @@
 
 import { useState ,useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 import {
   Search,
@@ -13,11 +13,24 @@ import {
 
 import { useCart } from "../context/CartContext";
 
+import { useWish } from "../context/WishContext";
+
+import { useAuth } from "../context/AuthContext";
+import { ChevronDown, LogOut } from "lucide-react";
 
 
 
+export default function Navbar(){
 
-const Navbar = () => {
+
+  const [accountOpen, setAccountOpen] = useState(false);
+
+  const { user, loading } = useAuth();
+
+  const navigate = useNavigate();
+  
+
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [searchOpen, setSearchOpen] = useState(false);
@@ -28,6 +41,28 @@ const Navbar = () => {
   const suggestions = ["Suits", "Casual", "Trousers"];
 
   const{cartItems}=useCart();
+  const {wishListItem}=useWish();
+
+
+
+
+  const handleLogout = async()=>{
+
+    
+
+    const {error} = await supabase.auth.signOut();
+
+    if(error){console.error(error.message ,'Logout error'); return;}
+
+    setAccountOpen(false);
+
+    navigate('/login');
+  }
+
+
+
+
+
 
 
 
@@ -157,51 +192,107 @@ return (
               search in products
             </span>
           </button>
+            
 
-          <Link
-            to="/login"
-            aria-label="Account"
-            className={`${iconClass} hidden sm:flex group relative`}
-          >
-            <UserRound size={19} strokeWidth={1.6} />
-              <span className="
-              absolute left-1/2 top-full mt-3
-              -translate-x-1/2
-              whitespace-nowrap
-              rounded-md bg-[#171717] px-3 py-2
-              text-xs text-white
-              opacity-0 invisible
-              transition-all duration-200
-              group-hover:opacity-100
-              group-hover:visible"
+
+          <div className="relative hidden sm:block">
+
+            <button
+              type="button"
+              aria-label="Account menu"
+              aria-expanded={accountOpen}
+              onClick={() => setAccountOpen(!accountOpen)}
+              className={iconClass}
             >
-              my profail
-            </span>
-            
-          </Link>
+              <UserRound size={19} strokeWidth={1.6} />
+            </button>
+
+            {accountOpen && !loading && (
+              <div className="absolute right-0 top-full mt-3 w-64
+                rounded-xl border border-[#E5DED3] bg-[#F7F5F0]
+                p-4 shadow-xl z-50">
+
+                {user ? (
+                  <>
+                    <div className="border-b border-[#E5DED3] pb-4 mb-3">
+                      <p className="text-[10px] tracking-[0.2em] text-[#A39585]">
+                        MY ACCOUNT
+                      </p>
+
+                      <p className="mt-2 text-sm font-medium text-[#171717]">
+                        Welcome Back
+                      </p>
+
+                      <p className="mt-1 text-xs text-[#737373] break-all">
+                        {user.email}
+                      </p>
+
+                      <Link
+                       className="mt-2 text-sm font-medium text-[#171717]"
+                       to='/favorit'>
+                        my wishList
+                        <span
+                        className="rounded-full -top-2 -right-2 px-1.5 bg-[#A39585] text-xs text-white"
+                        >
+                          {wishListItem.length}
+                        </span>
+                      </Link>
+                    </div>
 
 
-          <Link
-          to='/favorit'
-          className={`${iconClass} hidden sm:flex group relative`}
-          >
-            
-           <Heart  size={19} strokeWidth={1.6}/>
-            <span className="
-              absolute left-1/2 top-full mt-3
-              -translate-x-1/2
-              whitespace-nowrap
-              rounded-md bg-[#171717] px-3 py-2
-              text-xs text-white
-              opacity-0 invisible
-              transition-all duration-200
-              group-hover:opacity-100
-              group-hover:visible"
-            >
-              my wish list
-            </span>
-            
-          </Link>
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-3
+                        py-3 text-sm text-red-700 hover:text-red-900"
+                    >
+                      <LogOut size={17} />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="border-b border-[#E5DED3] pb-4 mb-3">
+                      <p className="text-[10px] tracking-[0.2em] text-[#A39585]">
+                        WELCOME TO SAUDI
+                      </p>
+
+                      <p className="mt-2 text-sm text-[#171717]">
+                        Welcome Guest
+                      </p>
+                    </div>
+
+                    <Link
+                      to="/login"
+                      onClick={() => setAccountOpen(false)}
+                      className="block bg-[#171717] py-3 text-center
+                        text-[10px] tracking-[0.2em] text-white
+                        hover:bg-[#A39585] transition"
+                    >
+                      SIGN IN
+                    </Link>
+
+                    <Link
+                      to="/register"
+                      onClick={() => setAccountOpen(false)}
+                      className="mt-3 block text-center text-xs
+                        text-[#737373] underline underline-offset-4
+                        hover:text-[#171717]"
+                    >
+                      Create Account
+                    </Link>
+                  </>
+                )}
+
+              </div>
+            )}
+
+          </div>
+
+
+
+     
 
           <Link
             to="/cart"
@@ -267,21 +358,52 @@ return (
               </Link>
             ))}
 
-            <Link
-              to="/login"
-              onClick={() => setMenuOpen(false)}
-              className="text-xs tracking-[0.18em] text-[#292824]"
-            >
-              MY ACCOUNT
-            </Link>
+            {user ? (
+
+              <div className="border-t border-[#E5DED3] pt-5">
+
+                <p className="text-xs text-[#737373] mb-3">
+                  {user.email}
+                </p>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-xs text-red-700"
+                >
+                  <LogOut size={16} />
+                  SIGN OUT
+                </button>
+
+              </div>
+
+            ) : (
+
+              <div className="flex flex-col gap-5 border-t border-[#E5DED3] pt-5">
+
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-xs tracking-[0.18em]"
+                >
+                  SIGN IN
+                </Link>
+
+                <Link
+                  to="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-xs tracking-[0.18em]"
+                >
+                  CREATE ACCOUNT
+                </Link>
+
+              </div>
+
+            )}
 
          
           </div>
         </div>
       )}
-
-
-
 
 
       {/* Search Popup */}
@@ -436,4 +558,4 @@ return (
   );
 };
 
-export default Navbar;
+

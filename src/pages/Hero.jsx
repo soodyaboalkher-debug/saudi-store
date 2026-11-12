@@ -62,7 +62,7 @@ const Hero = () => {
       {/* Image */}
       <div className="relative h-[65svh] min-h-[400px] overflow-hidden md:h-full md:min-h-[calc(100svh-64px)]">
         <img
-          src="/heronew.jpg"
+          src="/heronew1.jpg"
           alt="SAUDI men's collection"
           className="absolute inset-0 h-full w-full object-cover object-[45%_center] md:object-center"
         />
