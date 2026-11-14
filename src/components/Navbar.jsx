@@ -40,7 +40,7 @@ export default function Navbar(){
 
   const suggestions = ["Suits", "Casual", "Trousers"];
 
-  const{cartItems}=useCart();
+  const{cartItems ,userId}=useCart();
   const {wishListItem}=useWish();
 
 
@@ -214,22 +214,24 @@ return (
 
                 {user ? (
                   <>
-                    <div className="border-b border-[#E5DED3] pb-4 mb-3">
-                      <p className="text-[10px] tracking-[0.2em] text-[#A39585]">
+                    <div className="border-b border-[#E5DED3] pb-5 mb-3">
+
+
+                      <p className="text-[12px] tracking-[0.2em] text-[#A39585] p-2">
                         MY ACCOUNT
                       </p>
 
-                      <p className="mt-2 text-sm font-medium text-[#171717]">
+                      <p className="mt-2 text-sm font-medium text-[#171717] p-2">
                         Welcome Back
                       </p>
 
-                      <p className="mt-1 text-xs text-[#737373] break-all">
+                      <p className="mt-1 text-xs text-[#737373] break-all p-2">
                         {user.email}
                       </p>
 
-                      <Link
-                       className="mt-2 text-sm font-medium text-[#171717]"
-                       to='/favorit'>
+                        <Link
+                        className="mt-2 text-xs p-2 font-medium text-[#171717]"
+                        to='/favorit'>
                         my wishList
                         <span
                         className="rounded-full -top-2 -right-2 px-1.5 bg-[#A39585] text-xs text-white"
@@ -237,7 +239,11 @@ return (
                           {wishListItem.length}
                         </span>
                       </Link>
+
+                  
                     </div>
+
+                    
 
 
 

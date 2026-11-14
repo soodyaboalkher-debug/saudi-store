@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import { LoaderCircle } from 'lucide-react';
 import { useWish } from '../context/WishContext';
 import { Heart } from 'lucide-react';
-
+import { FaShoppingCart } from 'react-icons/fa';
 
 
 
@@ -313,8 +313,16 @@ export default function ProductDetails() {
                 ? "SELECT A SIZE"
                 : selectedVariant.stock <= 0
                 ? "OUT OF STOCK" :
-                addLoading ? <LoaderCircle className='animate-spin' size={18}/>
-                : "ADD TO BAG"}
+                addLoading ? <LoaderCircle className='animate-spin font-bold h-10 w-10'/>
+                : <span className='flex gap-6'>
+
+                  <FaShoppingCart className="h-4 w-4"/>
+
+                  ADD TO CART
+                  
+                </span>
+                 
+                }
             </button>
 
          

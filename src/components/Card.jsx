@@ -1,10 +1,11 @@
 
-import { FaHeart } from "react-icons/fa";
+import { FaHeart} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useWish } from "../context/WishContext";
 
 const Card = ({ product }) => {
-  const { wishListItem, toggleWishList } = useWish();
+  const { wishListItem, toggleWishList ,wishActionLoading } = useWish();
+ 
 
   const isWishList = wishListItem.some(
     (item) => item.id === product.id
@@ -36,27 +37,18 @@ const Card = ({ product }) => {
 
         {/* Wishlist */}
         <button
+         disabled={wishActionLoading}
           onClick={() => toggleWishList(product)}
           aria-label="Toggle wishlist"
-          className={`absolute right-3 top-3 flex h-9 w-9 items-center
-             justify-center rounded-full bg-white/90 backdrop-blur-sm 
+          className={`absolute right-3 top-3 flex items-center
+             justify-center backdrop-blur-sm 
              transition-all duration-300 hover:scale-110 ${
             isWishList ? "text-red-600" : "text-[#A39585]"
           }`}
         >
-          <FaHeart size={15} />
+          <FaHeart size={17} className="disabled:text-black " />
         </button>
 
-        {/* Quick View */}
-        <Link
-          to={`/products/${product.id}`}
-          className="absolute bottom-0 left-0 w-full
-          translate-y-full bg-[#171717] py-4 text-center
-          text-[10px] tracking-[0.22em] text-white 
-          transition-transform duration-300 group-hover:translate-y-0"
-        >
-          QUICK VIEW
-        </Link>
 
       </div>
 
@@ -72,11 +64,15 @@ const Card = ({ product }) => {
             {product.name}
           </Link>
 
+         
+
           <p className="mt-2 text-[10px] tracking-[0.16em] text-[#999087]">
             MODERN ESSENTIALS
           </p>
 
         </div>
+
+       
 
         <div className="shrink-0 text-right">
           {product.minPrice !== null &&
@@ -96,6 +92,8 @@ const Card = ({ product }) => {
             </span>
           )}
         </div>
+
+        
 
       </div>
 

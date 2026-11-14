@@ -139,7 +139,7 @@ export function CartProduct() {
                         <button
                             onClick={() => decreaseQuantity(item.variantId)}
                             aria-label="Decrease quantity"
-                            className="text-stone-500 hover:text-black transition"
+                            className="text-stone-500 hover:text-black transition py-1 px-2"
                         >
                             <FaChevronLeft size={11} />
                         </button>
@@ -151,7 +151,7 @@ export function CartProduct() {
                         <button
                             onClick={() => increaseQuantity(item.variantId)}
                             aria-label="Increase quantity"
-                            className="text-stone-500 hover:text-black transition"
+                            className="text-stone-500 hover:text-black transition py-1 px-2"
                         >
                             <FaChevronRight size={11} />
                         </button>

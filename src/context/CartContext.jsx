@@ -104,7 +104,7 @@ function CartStateProvider({ children, storageKey, userId }) {
             )
           )
         `)
-        .eq("user_id", userId);
+      .eq("user_id", userId);
 
 
       if (error) {
@@ -192,14 +192,14 @@ function CartStateProvider({ children, storageKey, userId }) {
 
 
     /* لو زائر  */
-
+    // لو المنتج موجود نعدل الكميه فقط ولو مش موجود نضيفه
     if(!userId){
 
         setCartItems((prevItems) =>{
-        // هل مقاس المنتج موجود؟
+       
           const existingItem = prevItems.find((prev)=>prev.variantId === cartItem.variantId);
 
-          /* لو موجود عدل الكميه فقط ولو مش موجود ضيفة كعنصر جديد للسه */
+        
         if (existingItem){
 
         return prevItems.map((item)=>
@@ -374,16 +374,15 @@ function CartStateProvider({ children, storageKey, userId }) {
     : prev);
 
     });
-
-
-
-
   };
 
 
   // تقليل الكمية
-  const decreaseQuantity = (variantId) => {
+  const decreaseQuantity =async (variantId) => {
 
+    if(!userId){
+
+      
     setCartItems((prevItems) =>
       prevItems.map((prev) =>
         prev.variantId === variantId
@@ -394,18 +393,66 @@ function CartStateProvider({ children, storageKey, userId }) {
           : prev
       )
     );
+    return;
+    }
+
+    const cartItem = cartItems?.find((item)=>item.variantId === variantId);
+
+    if(!cartItem) return;
+
+    const newQuantity = Math.max(1, cartItem.quantity -1 );
+
+    
+
+    const {error}= await supabase
+    .from('cart_items')
+    .update({quantity:newQuantity})
+    .eq('user_id' ,userId)
+    .eq('variant_id' , variantId)
+
+    if(error){
+      console.error('ERROR IN decreaseQuantity' ,error)
+      return;
+    }
+
+    setCartItems((prevItems)=>{
+       return prevItems.map(prev => 
+        prev.variantId === cartItem.variantId ? {...prev ,quantity: newQuantity} : prev );
+    });
+
+
+
 
   };
 
 
   // حذف منتج من السلة
-  const deleteItemCart = (variantId) => {
+  const deleteItemCart =async (variantId) => {
+    if(!userId){
 
-    setCartItems((prevItems) =>
+      setCartItems((prevItems) =>
       prevItems.filter((prev) =>
         prev.variantId !== variantId
       )
-    );
+      );
+
+      return;
+    }
+
+    const {error} = await supabase
+    .from('cart_items')
+    .delete()
+    .eq('user_id' , userId)
+    .eq('variant_id' , variantId)
+
+    if(error){
+      console.error('ERROR in deleteItemFromCart' ,error)
+      return;
+    }
+
+    setCartItems((prevItems)=>{
+      return prevItems.filter((prev)=> prev.variantId !== variantId)
+    })
 
   };
 

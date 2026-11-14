@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { useNavigate, Link } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -148,7 +149,12 @@ return (
             disabled={loading}
             className="w-full bg-[#171717] text-white py-4 text-[10px] tracking-[0.3em] transition-all duration-300 hover:bg-[#39352F] disabled:opacity-50"
           >
-            {loading ? "SIGNING IN..." : "SIGN IN"}
+            {loading ? 
+            <span className="flex items-center justify-center gap-4">
+              <LoaderCircle className="animate-spin text-yellow-700/80 h-4 w-4"/>
+               SIGNING IN...
+            </span> : "SIGN IN"
+            }
           </button>
 
         </form>
