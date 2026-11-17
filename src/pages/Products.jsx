@@ -50,7 +50,7 @@ function Products() {
   },[minPrice ,maxPrice]);
 
 
-
+// لو الكاتيجورى سلوج موجود هاتلي الاي دي الخاص بالكاتيجورى المطابق فقط 
   const selectedCategory = categorySlug
     ? matchedCategory?.id
     : "all";
@@ -59,6 +59,8 @@ function Products() {
   // Filter products
   const hasPriceFilter =
   appliedMinPrice !== '' || appliedMaxPrice !== '';
+
+  
 
   const filtredProducts = products.filter((product) => {
 
@@ -111,15 +113,20 @@ function Products() {
   useEffect(() => {
     if (categoriesLoading) return;
 
+    let isActive =true;
+
     const getProducts = async () => {
       setLoading(true);
       setError("");
 
       if (categorySlug && !matchedCategory) {
+
+        if (isActive){
         setProducts([]);
         setError("Category not found.");
         setLoading(false);
         return;
+        }
       }
 
       try {
@@ -137,19 +144,32 @@ function Products() {
 
         const { data, error } = await query;
 
+        if(!isActive) return;
+
         if (error) throw error;
 
-        const productsWithPrice= (data ?? []).map((product)=>{
-         const availableVariant = product.product_variants.filter((variant)=> variant.stock > 0  );
+        
 
-         const minPrice = availableVariant.length > 0 
-         ?Math.min(...availableVariant.map(variant => Number(variant.price))) : null;
+        
+        // داله بتحفظ البينات بعد محدثناها باضافه اقل سعر لزوم الفلتره
+        const productsWithPrice= 
+          (data ?? []).map((product)=>{
 
-         return {...product , minPrice};
+            // هاتلي كل القطع اللى مخزونها اكبر من الزيرو
+           const availableVariant = product.product_variants.filter((variant)=> variant.stock > 0  );
 
-        });
+           // شوف كام قطعه رجعت من الافيلابول فاريانت لو رجع قطع ستوكها اكبر من الصفر 
+           //واعمل عليهم ماب ورجعلي القطعه التي تحتوى علي اقل سعر
+           const minPrice = availableVariant.length > 0 
+           ?Math.min(...availableVariant.map(variant => Number(variant.price))) : null;
 
 
+           // وفي الاخر فكك البروداكت الواحده وحطلي فيها الماين برايس 
+           return {...product , minPrice};
+
+          });
+
+        // حدث ستات اللى بتحفظ البينات وحدثها خليها تساوى المنتجات اللى جايه من الداتا بس محدثه
         setProducts(productsWithPrice);
         
          
@@ -158,15 +178,28 @@ function Products() {
 
       } catch (err) {
         console.error(err);
-        setError(
+
+        if(isActive) { 
+          setError(
           "An error occurred while retrieving data. Please try again."
         );
+        }
+        
       } finally {
-        setLoading(false);
+
+        if(isActive){
+
+          setLoading(false);
+
+        }
+        
       }
     };
-
     getProducts();
+
+    return ()=>{isActive = false;}
+
+    
   }, [
     categoriesLoading,
     categorySlug,
@@ -238,7 +271,7 @@ function Products() {
 
         </nav>
 
-        {/* search */}
+    
         <div  className=" flex items-center justify-center ">
          <Search className="text-[#A39585]"/>
          <input type="text"

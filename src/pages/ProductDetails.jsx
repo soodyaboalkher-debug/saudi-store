@@ -33,68 +33,70 @@ export default function ProductDetails() {
 
 
 
- useEffect(()=>{
-  
-  const getProduct = async()=>{
+ useEffect(() => {
 
+    let isActive = true;
 
-    try{
+    const getProduct = async () => {
 
-    setLoading(true)
-    setWrong('')
+        try {
 
-    const {data,error}=await supabase
+            setLoading(true);
+            setWrong('');
+            setProduct(null);
+            setSelectedVariant(null);
 
-   .from ('products')
-   .select(`* , 
-    product_variants(
-    id ,
-    price ,
-    stock,
-    sizes(
-      id,
-      name
-    )
-        
-    )`)
-    
+            const { data, error } = await supabase
+                .from('products')
+                .select(`
+                    *,
+                    product_variants(
+                        id,
+                        price,
+                        stock,
+                        sizes(
+                            id,
+                            name
+                        )
+                    )
+                `)
+                .eq('id', id)
+                .single();
 
-    .eq('id' ,id)
-    .single()
+            if (error) throw error;
 
-    if(error){
-      throw error;
-    }
+            if (!isActive) return;
 
-    setProduct(data);
-    const { data: sizesData, error: sizesError } = await supabase
-   .from('sizes')
-   .select('*');
+            setProduct(data);
 
-   
+            if (data.product_variants?.length > 0) {
+                setSelectedVariant(data.product_variants[0]);
+            }
 
-    if (data && data.product_variants && data.product_variants.length > 0) {
-      setSelectedVariant(data.product_variants[0]);
-    }
+        } catch (err) {
 
+            console.error(err);
 
-    }catch(err){
-    
-      console.error(err.message);
-      setWrong('an error occurred try agin')
+            if (isActive) {
+                setWrong('An error occurred. Please try again.');
+            }
 
-    }finally{
+        } finally {
 
-      setLoading(false)
-    }
-  
-  };
+            if (isActive) {
+              setLoading(false);
+            }
 
-  getProduct();
+        }
+    };
 
+    getProduct();
 
+    return () => {
+        isActive = false;
+    };
 
- },[id])
+}, [id]);
 
 
 
@@ -224,7 +226,7 @@ export default function ProductDetails() {
             {/* العداد والكمية (Quantity) */}
             <div className="mb-8">
               <span className="block text-xs uppercase tracking-widest text-[#8C8275] mb-3">
-                Available Stock : {selectedVariant.stock}
+                Available Stock : {selectedVariant?.stock ?? 0}
               </span>
               <div className="inline-flex items-center border border-[#C5BCAC] rounded-lg bg-transparent">
 

@@ -51,100 +51,111 @@ function CartStateProvider({ children, storageKey, userId }) {
  const [cartItems, setCartItems] = useState([]);
  const [cartLoading, setCartLoading] = useState(true);
 
- const [addLoading ,setAddLoading]=useState(false);
+ const [addLoading ,setAddLoading] = useState(false);
 
 
- // جلب بيانات السلة
   useEffect(() => {
 
-    let active = true;
+    let isActive = true;
 
     const loadCart = async () => {
 
       setCartLoading(true);
 
-      // لو المستخدم زائر: نجيب السلة من localStorage
-      if (!userId) {
+      try {
 
-        try {
+        // لو المستخدم زائر
+        if (!userId) {
+
           const savedCart = localStorage.getItem(storageKey);
 
-          if (active) {
-            setCartItems(savedCart ? JSON.parse(savedCart) : []);
+          const parsedCart = savedCart
+            ? JSON.parse(savedCart)
+            : [];
+
+          if (!Array.isArray(parsedCart)) {
+            throw new Error("Invalid cart data");
           }
 
-        } catch (error) {
-          console.error("Error loading guest cart:", error);
+          if (isActive) {
+            setCartItems(parsedCart);
+          }
+
+          return;
         }
 
-        if (active) setCartLoading(false);
 
-        return;
-      }
-
-
-      // لو المستخدم مسجل: نجيب السلة من Supabase
-      const { data, error } = await supabase
-        .from("cart_items")
-        .select(`
-          id,
-          variant_id,
-          quantity,
-          product_variants (
+        // لو المستخدم مسجل
+        const { data, error } = await supabase
+          .from("cart_items")
+          .select(`
             id,
-            price,
-            stock,
-            products (
+            variant_id,
+            quantity,
+            product_variants (
               id,
-              name,
-              image_url
-            ),
-            sizes (
-              name
+              price,
+              stock,
+              products (
+                id,
+                name,
+                image_url
+              ),
+              sizes (
+                name
+              )
             )
-          )
-        `)
-      .eq("user_id", userId);
+          `)
+          .eq("user_id", userId);
+
+        if (error) throw error;
+
+        if (!isActive) return;
 
 
-      if (error) {
+        // تحويل البيانات لشكل React
+        const formattedCart = (data ?? [])
+          .map((item) => {
 
-        console.error("Error fetching cart:", error);
+            const variant = item.product_variants;
+            const product = variant?.products;
 
-        if (active) {
+            if (!variant || !product) return null;
+
+            return {
+              id: product.id,
+              name: product.name,
+              image_url: product.image_url,
+
+              variantId: item.variant_id,
+              size: variant.sizes?.name ?? "Size",
+
+              price: variant.price,
+              stock: variant.stock,
+              quantity: item.quantity
+            };
+
+          })
+          .filter(Boolean);
+
+
+        setCartItems(formattedCart);
+
+
+      } catch (error) {
+
+        console.error("Error loading cart:", error);
+
+        if (isActive) {
           setCartItems([]);
+        }
+
+      } finally {
+
+        if (isActive) {
           setCartLoading(false);
         }
 
-        return;
-      }
-
-
-      // تحويل بيانات Supabase لشكل CartItem المستخدم في React
-      const formattedCart = data.map((item) => {
-
-        const variant = item.product_variants;
-        const product = variant.products;
-
-        return {
-          id: product.id,
-          name: product.name,
-          image_url: product.image_url,
-
-          variantId: item.variant_id,
-          size: variant.sizes.name,
-
-          price: variant.price,
-          stock: variant.stock,
-          quantity: item.quantity
-        };
-
-      });
-
-
-      if (active) {
-        setCartItems(formattedCart);
-        setCartLoading(false);
       }
 
     };
@@ -153,7 +164,7 @@ function CartStateProvider({ children, storageKey, userId }) {
     loadCart();
 
     return () => {
-      active = false;
+      isActive = false;
     };
 
   }, [userId, storageKey]);
@@ -173,8 +184,9 @@ function CartStateProvider({ children, storageKey, userId }) {
 
 
   // إضافة منتج للسلة
+ 
   const addToCart = async (product, quantity, selectedVariant) => {
-    
+
     const cartItem = {
       id: product.id,
       name: product.name,
@@ -185,123 +197,126 @@ function CartStateProvider({ children, storageKey, userId }) {
 
       price: selectedVariant.price,
       stock: selectedVariant.stock,
-      quantity:Math.min(selectedVariant.stock, quantity)
+      quantity: Math.min(selectedVariant.stock, quantity)
     };
 
-    
+    if (
+      !Number.isInteger(quantity) ||
+      quantity <= 0 ||
+      selectedVariant.stock <= 0
+    ) {
+      return;
+    }
 
+    // لو زائر
+    if (!userId) {
 
-    /* لو زائر  */
-    // لو المنتج موجود نعدل الكميه فقط ولو مش موجود نضيفه
-    if(!userId){
+      setCartItems((prevItems) => {
 
-        setCartItems((prevItems) =>{
-       
-          const existingItem = prevItems.find((prev)=>prev.variantId === cartItem.variantId);
+        const existingItem = prevItems.find(
+          (prev) => prev.variantId === cartItem.variantId
+        );
 
-        
-        if (existingItem){
+        if (existingItem) {
 
-        return prevItems.map((item)=>
-          item.variantId === cartItem.variantId 
-          ? {
-            ...item , quantity : Math.min (item.stock, item.quantity +cartItem.quantity)
-            }
-            : item
-          )
-      }
+          return prevItems.map((item) =>
+            item.variantId === cartItem.variantId
+              ? {
+                  ...item,
+                  quantity: Math.min(
+                    item.stock,
+                    item.quantity + cartItem.quantity
+                  )
+                }
+              : item
+          );
+        }
 
-      return [...prevItems , cartItem]
+        return [...prevItems, cartItem];
 
       });
 
       return;
     }
 
-    
+    // لو مستخدم مسجل
+    try {
 
-    /* لو مسجل */
-    setAddLoading(true);
-    const { data: existingItem, error: findError } = await supabase
-    .from("cart_items")
-    .select("id, quantity")
-    .eq("user_id", userId)
-    .eq("variant_id", selectedVariant.id)
-    .maybeSingle();
+      setAddLoading(true);
 
-    if (findError) {
-      console.error("Error searching cart:", findError);
-      return;
-    }
-    // لو المنتج موجود في السله
-    if (existingItem) {
+      const { data: existingItem, error: findError } = await supabase
+        .from("cart_items")
+        .select("id, quantity")
+        .eq("user_id", userId)
+        .eq("variant_id", selectedVariant.id)
+        .maybeSingle();
+
+      if (findError) throw findError;
+
+      // لو المنتج موجود
+      if (existingItem) {
 
         const newQuantity = Math.min(
-         cartItem.stock,
-         existingItem.quantity + cartItem.quantity
+          cartItem.stock,
+          existingItem.quantity + cartItem.quantity
         );
 
         const { error: updateError } = await supabase
-        .from("cart_items")
-        .update({ quantity: newQuantity })
-        .eq("id", existingItem.id);
+          .from("cart_items")
+          .update({ quantity: newQuantity })
+          .eq("id", existingItem.id);
 
-
-        if (updateError) {
-         console.error("Error updating cart:", updateError);
-         return;
-        }
+        if (updateError) throw updateError;
 
         setCartItems((prevItems) => {
 
-         const itemExists = prevItems.some(
-         (item) => item.variantId === selectedVariant.id
-         );
-
-         if (itemExists) {
-          return prevItems.map((item) =>
-           item.variantId === selectedVariant.id
-             ? { ...item, quantity: newQuantity }
-              : item
+          const itemExists = prevItems.some(
+            (item) => item.variantId === selectedVariant.id
           );
-         }
 
-         return [...prevItems, { ...cartItem, quantity: newQuantity }];
+          if (itemExists) {
+            return prevItems.map((item) =>
+              item.variantId === selectedVariant.id
+                ? { ...item, quantity: newQuantity }
+                : item
+            );
+          }
+
+          return [...prevItems, { ...cartItem, quantity: newQuantity }];
 
         });
 
-        setAddLoading(false);
+        return;
+      }
 
-      return;
+      // لو المنتج مش موجود
+      const { error: insertError } = await supabase
+        .from("cart_items")
+        .insert({
+          user_id: userId,
+          variant_id: selectedVariant.id,
+          quantity: cartItem.quantity
+        });
+
+      if (insertError) throw insertError;
+
+      setCartItems((prevItems) => [
+        ...prevItems,
+        cartItem
+      ]);
+
+    } catch (err) {
+
+      console.error("Error adding cart item:", err);
+
+    } finally {
+
+      setAddLoading(false);
+
     }
-
-   
-
-    // لو المنتج مش موجود في السلة
-
-    setAddLoading(true);
-    const { error: insertError } = await supabase
-      .from("cart_items")
-      .insert({
-        user_id: userId,
-        variant_id: selectedVariant.id,
-        quantity: cartItem.quantity
-      });
-
-    if (insertError) {
-      console.error("Error adding cart item:", insertError);
-      return;
-    }
-
-    // تحديث React State
-    setCartItems((prevItems) => [
-      ...prevItems,
-      cartItem
-    ]);
-
-    setAddLoading(false);
 
   };
+
 
 
   // تفريغ السلة
@@ -347,12 +362,11 @@ function CartStateProvider({ children, storageKey, userId }) {
 
     if(!cartItem) return;
 
-    // نحسب الكمية الجديدة
-    const newQuantity = Math.min(
-      cartItem.stock,
-      cartItem.quantity + 1
-    );
-    if (newQuantity === cartItem.quantity) return;
+    if (cartItem.quantity >= cartItem.stock) {
+      return;
+    }
+
+    const newQuantity = cartItem.quantity + 1;
     
 
     const {error} = await supabase

@@ -17,7 +17,7 @@ const shopLinks =[
 
 
 
-export function Footer (){
+export default function Footer (){
 
 return(
 

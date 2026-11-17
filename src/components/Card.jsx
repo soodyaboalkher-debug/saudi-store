@@ -2,17 +2,25 @@
 import { FaHeart} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useWish } from "../context/WishContext";
+import { LoaderCircle } from "lucide-react";
 
 const Card = ({ product }) => {
   const { wishListItem, toggleWishList ,wishActionLoading } = useWish();
+
+
+  const isActionLoading = wishActionLoading === product.id;
  
 
   const isWishList = wishListItem.some(
     (item) => item.id === product.id
   );
 
+
+
   return (
-    <article className="group w-full">
+    <article className="group w-full relative">
+
+      
 
       {/* Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden bg-[#EAE6DE]">
@@ -41,12 +49,20 @@ const Card = ({ product }) => {
           onClick={() => toggleWishList(product)}
           aria-label="Toggle wishlist"
           className={`absolute right-3 top-3 flex items-center
-             justify-center backdrop-blur-sm 
+             justify-center backdrop-blur-sm bg-transpirant p-3
              transition-all duration-300 hover:scale-110 ${
             isWishList ? "text-red-600" : "text-[#A39585]"
           }`}
         >
-          <FaHeart size={17} className="disabled:text-black " />
+          {isActionLoading ? (
+              <LoaderCircle className="animate-spin text-black font-bold text-slate-900" size={24} />
+          ) : (
+              <FaHeart size={17} />
+          )}
+
+          
+          
+          
         </button>
 
 
@@ -59,7 +75,8 @@ const Card = ({ product }) => {
 
           <Link
             to={`/products/${product.id}`}
-            className="block truncate text-[13px] font-medium tracking-wide text-[#262626] transition-colors hover:text-[#A39585]"
+            className="block truncate text-[13px] font-medium 
+            tracking-wide text-[#262626] transition-colors hover:text-[#A39585]"
           >
             {product.name}
           </Link>

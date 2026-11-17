@@ -9,7 +9,11 @@ import {
 
 import { Link } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+
 export function CartProduct() {
+
+    const navigate = useNavigate();
 
   const {
     cartItems,
@@ -250,10 +254,16 @@ export function CartProduct() {
 
                     {/* CHECKOUT */}
                     <button
+                    onClick={()=> navigate('/checkout')}
+                    to='/checkoute'
                     disabled={cartItems.length === 0}
-                    className="w-full bg-[#171717] text-white py-4 mt-8 text-xs tracking-[0.15em] hover:bg-stone-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full bg-[#171717] text-white py-4 mt-8 text-xs
+                    tracking-[0.15em] hover:bg-stone-700 transition
+                    disabled:opacity-40 disabled:cursor-not-allowed"
                     >
+
                     PROCEED TO CHECKOUT
+
                     </button>
 
 

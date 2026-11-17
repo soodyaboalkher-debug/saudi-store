@@ -7,13 +7,14 @@ import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import { CartProvider } from "./context/CartContext";
 import {CartProduct} from "./pages/CartProduct";
-import {Footer} from "./components/Footer"
+import Footer from "./components/Footer"
 import WhatsAppButton from "./components/WhatsAppButton";
 import { WishProvider } from "./context/WishContext";
 import {Wish} from "./pages/Wish"
 import { AuthProvider } from "./context/AuthContext";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Checkoute from './pages/Checkoute'
 
 
 
@@ -44,6 +45,7 @@ export default function App(){
 
             <Route path="/login" element={<Login/>} />
             <Route path="/register"  element={<Register/>}/>
+            <Route path="/checkout"  element={<Checkoute/>}/>
           
           </Routes>
 

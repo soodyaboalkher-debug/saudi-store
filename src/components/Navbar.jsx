@@ -8,7 +8,7 @@ import {
   ShoppingBag,
   Menu,
   X,
-  Heart,
+  
 } from "lucide-react";
 
 import { useCart } from "../context/CartContext";
@@ -16,7 +16,7 @@ import { useCart } from "../context/CartContext";
 import { useWish } from "../context/WishContext";
 
 import { useAuth } from "../context/AuthContext";
-import { ChevronDown, LogOut } from "lucide-react";
+import {  LogOut } from "lucide-react";
 
 
 
@@ -40,7 +40,7 @@ export default function Navbar(){
 
   const suggestions = ["Suits", "Casual", "Trousers"];
 
-  const{cartItems ,userId}=useCart();
+  const{cartItems}=useCart();
   const {wishListItem}=useWish();
 
 
@@ -124,13 +124,14 @@ export default function Navbar(){
 
 
 const iconClass =
-    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5DED3] bg-white/80 text-[#292824] transition duration-300 hover:bg-[#EDE5D9]";
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5DED3] bg-white/80 text-[#292824] transition duration-300 hover:bg-[#EDE5D9]";
 
 const navLinks = [
     { label: "HOME", to: "/" },
     { label: "SUITS", to: "/products?category=suits" },
     { label: "CASUAL", to: "/products?category=casual" },
     { label: "TROUSERS", to: "/products?category=trousers" },
+    { label: "WISH LIST" , to:"/favorit"},
     
     
     { label: "All CATEGORY" , to :"/products"},
@@ -539,9 +540,7 @@ return (
                             <p className="text-sm text-[#292824]">
                               {product.name}
                             </p>
-                            <p className="mt-1 text-xs text-[#737373]">
-                              {product.price}
-                            </p>
+                         
                           </div>
                         </Link>
                       ))}

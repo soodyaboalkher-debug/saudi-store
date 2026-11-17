@@ -44,7 +44,9 @@ function WishStateProvider({ children, storageKey, userId }) {
     const [wishError, setWishError] = useState(null);
 
     const [retryCount, setRetryCount] = useState(0);
-    const [wishActionLoading, setWishActionLoading] = useState(false);
+
+    const [wishActionLoading, setWishActionLoading] = useState(null);
+
     const [wishActionError, setWishActionError] = useState(null);
 
     const [wishSaveError, setWishSaveError] = useState(null);
@@ -126,6 +128,8 @@ function WishStateProvider({ children, storageKey, userId }) {
 
             console.error("Wishlist loading error:", error);
 
+           
+
             if (isActive) {
                 setWishError(error.message);
                 setWishLoading(false);
@@ -175,7 +179,7 @@ function WishStateProvider({ children, storageKey, userId }) {
 
     const toggleWishList = async (product) => {
 
-        if (wishLoading || wishError || wishActionLoading) return;
+        if (wishLoading || wishError || wishActionLoading !== null) return;
 
         const isExist = wishListItem.some(
             item => item.id === product.id
@@ -198,7 +202,7 @@ function WishStateProvider({ children, storageKey, userId }) {
         // Logged-in User
         try {
 
-            setWishActionLoading(true);
+            setWishActionLoading(product.id);
             setWishActionError(null);
 
             if (isExist) {
@@ -244,7 +248,7 @@ function WishStateProvider({ children, storageKey, userId }) {
 
         } finally {
 
-            setWishActionLoading(false);
+            setWishActionLoading(null);
 
         }
     };
