@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useState } from "react";
 import { supabase } from "../supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkoute() {
-  const { cartItems, decreaseQuantity, increaseQuantity } = useCart();
+  const { cartItems, decreaseQuantity, increaseQuantity ,clearCart ,deleteItemCart} = useCart();
+
+  const navigate = useNavigate();
 
   const [formData ,setFormData]=useState({
     fullname :'',
@@ -14,7 +17,8 @@ export default function Checkoute() {
     governorate : '',
     city : '',
     address : '',
-  })
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
@@ -35,6 +39,8 @@ export default function Checkoute() {
 
 
     const handleOrder =async () => {
+
+      
         if (cartItems.length === 0) {
             alert("Your cart is empty");
             return;
@@ -58,29 +64,42 @@ export default function Checkoute() {
         return;
         }
 
-  
+       if (isSubmitting) return;
+
+       setIsSubmitting(true);
+
+      try{
 
         const { data, error } = await supabase.rpc(
         "create_order",
-        {
+         {
             p_customer: formData,
             p_items: cartItems.map((item) => ({
             variantId: item.variantId,
             quantity: item.quantity,
             })),
             p_payment_method: paymentMethod,
-        }
+         }
 
         
         );
 
         if(error){
-         alert(error.message);
-         return;
+         throw error;
         }
 
         console.log("Order ID:", data);
-        alert("Your order has been created successfully!");
+      
+        await clearCart();
+        navigate(`/ordersuccess/${data}`, {
+          state: { phone: formData.phone }
+        });
+      }catch(err){
+
+        alert(err.message)
+      }finally{
+        setIsSubmitting(false);
+      }
     };
 
   return (
@@ -269,11 +288,20 @@ export default function Checkoute() {
                     </button>
                   </div>
 
+                 
+
                 </div>
+              
 
                 <p className="pt-1 text-xs font-medium">
                   {item.price * item.quantity} EGP
                 </p>
+
+                <button 
+                  onClick={()=>deleteItemCart(item.variantId)}
+                 className="h-6 p-0.5 text-[10px] bg-black text-white hover:bg-red-600/50 text-black">
+                  delete
+                </button>
 
               </div>
             ))}
@@ -304,13 +332,15 @@ export default function Checkoute() {
 
           </div>
 
-          <button
+         <button
             type="submit"
             form="checkoute-form"
-            className="mt-8 w-full bg-[#211F1C] py-5 text-xs tracking-[3px] text-white transition hover:bg-[#A39585]"
+            disabled={isSubmitting}
+            className="mt-8 w-full bg-[#211F1C] py-5 text-xs tracking-[3px] text-white transition hover:bg-[#A39585] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            PLACE YOUR ORDER
+            {isSubmitting ? "PROCESSING..." : "PLACE YOUR ORDER"}
           </button>
+         
 
           <p className="mt-4 text-center text-[10px] tracking-wider text-stone-500">
             THANK YOU FOR CHOOSING SAUDI

@@ -15,7 +15,7 @@ const Hero = () => {
 
         <h1
           className="max-w-xl text-4xl font-normal leading-tight mb-8
-          tracking-tight text-[#171717] sm:text-5xl lg:text-6xl xl:text-7xl"
+          tracking-tight text-black sm:text-5xl lg:text-6xl xl:text-7xl"
             style={{ fontFamily: "'Playfair Display', serif" }}
         
         >

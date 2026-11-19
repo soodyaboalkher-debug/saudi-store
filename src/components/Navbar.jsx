@@ -131,11 +131,10 @@ const navLinks = [
     { label: "SUITS", to: "/products?category=suits" },
     { label: "CASUAL", to: "/products?category=casual" },
     { label: "TROUSERS", to: "/products?category=trousers" },
-    { label: "WISH LIST" , to:"/favorit"},
-    
-    
     { label: "All CATEGORY" , to :"/products"},
     { label: "ABOUT", to: "/#" },
+    { label: "WISH LIST" , to:"/favorit"},
+    { label: "MY ORDERS" , to:"/myorders"},
   ];
 
 return (
@@ -229,17 +228,6 @@ return (
                       <p className="mt-1 text-xs text-[#737373] break-all p-2">
                         {user.email}
                       </p>
-
-                        <Link
-                        className="mt-2 text-xs p-2 font-medium text-[#171717]"
-                        to='/favorit'>
-                        my wishList
-                        <span
-                        className="rounded-full -top-2 -right-2 px-1.5 bg-[#A39585] text-xs text-white"
-                        >
-                          {wishListItem.length}
-                        </span>
-                      </Link>
 
                   
                     </div>

@@ -15,7 +15,8 @@ import { AuthProvider } from "./context/AuthContext";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Checkoute from './pages/Checkoute'
-
+import OrderSuccess from './pages/OrderSuccess'
+import MyOrders from "./pages/MyOrders";
 
 
 export default function App(){
@@ -46,6 +47,8 @@ export default function App(){
             <Route path="/login" element={<Login/>} />
             <Route path="/register"  element={<Register/>}/>
             <Route path="/checkout"  element={<Checkoute/>}/>
+            <Route path="/ordersuccess/:orderId" element={<OrderSuccess/>}/>
+            <Route path="/myorders" element={<MyOrders/>}/> 
           
           </Routes>
 
