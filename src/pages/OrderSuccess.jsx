@@ -13,25 +13,47 @@ export default function OrderSuccess() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const getOrder = async () => {
-      try {
-        const { data, error } = await supabase.rpc("get_order", {
-          p_order_id: orderId,
-          p_phone: state?.phone ?? "",
-        });
+useEffect(() => {
+  const getOrder = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      setOrder(null);
 
-        if (error) throw error;
-        setOrder(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      // نتأكد إن رقم الطلب هو آخر طلب محفوظ
+      const savedOrderId = localStorage.getItem("guestOrderId");
+
+      if (savedOrderId !== orderId) {
+        throw new Error("Order information not found.");
       }
-    };
 
-    getOrder();
-  }, [orderId]);
+      // نقرأ الهاتف من التنقل، ولو مش موجود نقرأه من sessionStorage
+      const phone =
+        state?.phone || sessionStorage.getItem("guestOrderPhone");
+
+      if (!phone) {
+        throw new Error("Phone number not found. Please contact customer service.");
+      }
+
+      // نجيب تفاصيل الطلب الموجود من Supabase
+      const { data, error } = await supabase.rpc("get_order", {
+        p_order_id: orderId,
+        p_phone: phone.trim(),
+      });
+
+      if (error) throw error;
+
+      setOrder(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getOrder();
+}, [orderId, state?.phone]);
+
 
   return (
     <main className="min-h-screen bg-[#F7F5F0] text-[#292722] mt-20">

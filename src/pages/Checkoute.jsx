@@ -90,6 +90,11 @@ export default function Checkoute() {
 
         console.log("Order ID:", data);
         localStorage.setItem("guestOrderId", data);
+
+        sessionStorage.setItem(
+          "guestOrderPhone",
+          formData.phone
+        );
       
         await clearCart();
         navigate(`/ordersuccess/${data}`, {
