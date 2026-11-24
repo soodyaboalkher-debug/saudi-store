@@ -219,7 +219,7 @@ function Products() {
  
 
   return (
-    <div className="mt-20 min-h-screen bg-[#F7F5F0] px-8">
+    <div className="mt-20 min-h-screen px-8 bg-[#F7F5F0]">
 
       {/* المقدمة */}
       <div className="flex flex-col items-start justify-center">

@@ -66,13 +66,49 @@ export default function OrderSuccess() {
 
         {/* Order Content */}
         <div className="border border-[#E7E2D9] bg-[#FBFAF7]">
-
-          <div className="flex flex-col gap-2 border-b border-[#E7E2D9] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 border-b border-[#E7E2D9] p-6 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-serif text-xl">Order Summary</h2>
+
             {order && (
-              <p className="text-xs text-[#A39585]">
-                ORDER #{order.id}
-              </p>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-[#A39585]">YOUR ORDER ID</p>
+                  <p className="mt-2 break-all text-sm font-medium">
+                    {order.id}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(order.id);
+                      alert("Order ID copied successfully");
+                    } catch {
+                      alert("Unable to copy Order ID. Please copy it manually.");
+                    }
+                  }}
+                  className="border border-[#DCD5CA] px-4 py-2 text-xs tracking-wider transition hover:bg-[#E7E2D9]"
+                >
+                  COPY ORDER ID
+                </button>
+
+                <div className="border-t border-[#E7E2D9] pt-3">
+                  <p className="text-xs font-medium text-[#827565]">
+                    IMPORTANT — KEEP YOUR ORDER ID
+                  </p>
+
+                  <p className="mt-2 max-w-sm text-xs leading-6 text-[#737373]">
+                    Please save your Order ID. You will need it along with your
+                    phone number to track your order later.
+                  </p>
+
+                  <p className="mt-2 max-w-sm text-xs leading-6 text-[#737373]">
+                    Lost your Order ID? Don't worry. Contact our customer
+                    service team and provide your phone number to retrieve it.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 

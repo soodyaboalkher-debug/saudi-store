@@ -132,9 +132,9 @@ const navLinks = [
     { label: "CASUAL", to: "/products?category=casual" },
     { label: "TROUSERS", to: "/products?category=trousers" },
     { label: "All CATEGORY" , to :"/products"},
-    { label: "ABOUT", to: "/#" },
     { label: "WISH LIST" , to:"/favorit"},
     { label: "MY ORDERS" , to:"/myorders"},
+    { label: "ABOUT", to: "/about" },
   ];
 
 return (

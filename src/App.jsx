@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import { Routes,Route } from "react-router-dom";
 import Products from "./pages/Products";
-
+import About from "./pages/About";
 import ProductDetails from "./pages/ProductDetails";
 import { CartProvider } from "./context/CartContext";
 import {CartProduct} from "./pages/CartProduct";
@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Checkoute from './pages/Checkoute'
 import OrderSuccess from './pages/OrderSuccess'
 import MyOrders from "./pages/MyOrders";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 export default function App(){
@@ -33,6 +34,7 @@ export default function App(){
         <WishProvider>
           
           <Navbar/>
+          <ScrollToTop/>
 
           <Routes>
             <Route path="/" element={<Home/>} />
@@ -49,6 +51,7 @@ export default function App(){
             <Route path="/checkout"  element={<Checkoute/>}/>
             <Route path="/ordersuccess/:orderId" element={<OrderSuccess/>}/>
             <Route path="/myorders" element={<MyOrders/>}/> 
+            <Route path="/about" element={<About/>}/> 
           
           </Routes>
 

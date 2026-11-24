@@ -89,6 +89,7 @@ export default function Checkoute() {
         }
 
         console.log("Order ID:", data);
+        localStorage.setItem("guestOrderId", data);
       
         await clearCart();
         navigate(`/ordersuccess/${data}`, {
