@@ -1,4 +1,5 @@
 # SAUDI – Full-Stack E-commerce Store
+![SAUDI Store Homepage](./Screenshot%202026-11-25%20at%2023-26-48%20SAUDI%20Modern%20Essentials.png)
 
 A modern, responsive e-commerce application built with React.js, Tailwind CSS, and Supabase.
 
