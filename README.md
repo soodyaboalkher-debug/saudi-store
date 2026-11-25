@@ -1,16 +1,62 @@
-# React + Vite
+# SAUDI – Full-Stack E-commerce Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive e-commerce application built with React.js, Tailwind CSS, and Supabase.
 
-Currently, two official plugins are available:
+**Live Demo:** https://saudi-store-tau.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## About The Project
 
-## React Compiler
+SAUDI is a full-stack clothing e-commerce application designed to provide a smooth and modern online shopping experience.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The project combines a responsive frontend with Supabase backend services and PostgreSQL database integration.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- User authentication and account management
+- Product browsing and category filtering
+- Product search
+- Product variants and size selection
+- Shopping cart
+- Wishlist
+- Checkout and order creation
+- Order tracking for customers
+- Persistent cart and wishlist functionality
+- Database security using Row Level Security (RLS)
+
+## Technologies Used
+
+**Frontend**
+- React.js
+- JavaScript
+- Tailwind CSS
+- React Router
+
+**Backend & Database**
+- Supabase
+- PostgreSQL
+- Supabase Authentication
+- SQL
+- Row Level Security (RLS)
+
+**Tools & Deployment**
+- Git & GitHub
+- Vite
+- Vercel
+
+## What I Learned
+
+- Building reusable React components
+- Managing application state with React Context API
+- Integrating React applications with Supabase
+- Working with relational databases and foreign keys
+- Implementing authentication and database security
+- Building real-world e-commerce workflows
+
+## Links
+
+- **Live Website:** https://saudi-store-tau.vercel.app/
+- **Source Code:** https://github.com/soodyaboalkher-debug/saudi-store
+
+---
+
+Developed by **Saudi Adel**
